@@ -18,8 +18,8 @@ Future<dynamic> performGetRequest({required String endpoint}) async {
     } else if (response.statusCode == 404) {
       throw const ServerException(message: 'Pokémon no encontrado');
     } else {
-      throw ServerException(
-        message: 'Error en el servidor: ${response.statusCode}',
+      throw const ServerException(
+        message: 'Error en el servidor: por favor reintente nuevamente',
       );
     }
   } catch (e) {

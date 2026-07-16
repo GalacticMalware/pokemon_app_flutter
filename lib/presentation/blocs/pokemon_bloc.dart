@@ -4,6 +4,7 @@ import 'package:pokedex_app/domain/entities/pokemon.dart';
 import 'package:pokedex_app/domain/usecases/get_pokemon_list.dart';
 import 'package:pokedex_app/presentation/blocs/pokemon_event.dart';
 import 'package:pokedex_app/presentation/blocs/pokemon_state.dart';
+import 'package:pokedex_app/presentation/utils/sort_and_filter.dart';
 
 //Bloc
 
@@ -70,7 +71,7 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
 
         // Si hay una busqueda activa al cargar mas, recalculamos los elementos filtrados
         final updatedFilteredList = currentState.searchQuery.isNotEmpty
-            ? _filterPokemonList(updatedList, currentState.searchQuery)
+            ? filterPokemonList(updatedList, currentState.searchQuery)
             : const <Pokemon>[];
 
         emit(currentState.copyWith(
@@ -98,7 +99,7 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
       return;
     }
 
-    final filtered = _filterPokemonList(currentState.pokemonList, query);
+    final filtered = filterPokemonList(currentState.pokemonList, query);
 
     emit(currentState.copyWith(filteredList: filtered, searchQuery: query));
   }
@@ -111,10 +112,10 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
     if (currentState is! PokemonLoaded) return;
 
     final sortedList =
-        _sortPokemonList(currentState.pokemonList, event.sortOption);
+        sortPokemonList(currentState.pokemonList, event.sortOption);
 
     final filteredList = currentState.searchQuery.isNotEmpty
-        ? _filterPokemonList(sortedList, currentState.searchQuery)
+        ? filterPokemonList(sortedList, currentState.searchQuery)
         : const <Pokemon>[];
 
     emit(currentState.copyWith(
@@ -122,24 +123,5 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
       filteredList: filteredList,
       sortOption: event.sortOption,
     ));
-  }
-
-  List<Pokemon> _filterPokemonList(List<Pokemon> list, String query) {
-    return list
-        .where((pokemon) => pokemon.name.toLowerCase().contains(query))
-        .toList();
-  }
-
-  List<Pokemon> _sortPokemonList(List<Pokemon> list, SortOption option) {
-    final sorted = List<Pokemon>.from(list);
-    switch (option) {
-      case SortOption.number:
-        sorted.sort((a, b) => a.id.compareTo(b.id));
-        break;
-      case SortOption.name:
-        sorted.sort((a, b) => a.name.compareTo(b.name));
-        break;
-    }
-    return sorted;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokedex_app/data/datasources/pokemon_remote_datasource.dart';
+import 'package:pokedex_app/data/datasources/pokemon_remote_datasource_impl.dart';
 import 'package:pokedex_app/data/repositories/pokemon_repository_impl.dart';
 import 'package:pokedex_app/domain/repositories/pokemon_repository.dart';
 import 'package:pokedex_app/domain/usecases/get_pokemon_detail.dart';

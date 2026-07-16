@@ -1,7 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pokedex_app/core/errors/exceptions.dart';
-// 💡 Importamos la entidad de dominio correspondiente
 import 'package:pokedex_app/domain/entities/pokemon_description.dart';
+
+// 💡 Importamos el sub-modelo que acabamos de extraer
+import 'sub_models/flavor_text_entry_model.dart';
 
 part 'pokemon_description_model.g.dart';
 
@@ -23,7 +25,7 @@ class PokemonDescriptionModel {
   factory PokemonDescriptionModel.fromJson(Map<String, dynamic> json) =>
       _$PokemonDescriptionModelFromJson(json);
 
-  //Eliminando caracteres raros de la PokeAPI
+  // Eliminando caracteres raros de la PokeAPI
   String getCleanDescription({required String lang, String? fallback}) {
     try {
       final entry = flavorTextEntries.firstWhere(
@@ -50,43 +52,4 @@ class PokemonDescriptionModel {
       descriptionEs: getCleanDescription(lang: 'es', fallback: textEn),
     );
   }
-}
-
-@JsonSerializable()
-class FlavorTextEntry {
-  @JsonKey(name: 'flavor_text')
-  final String flavorText;
-  final LanguageDetail language;
-  final VersionDetail version;
-
-  const FlavorTextEntry({
-    required this.flavorText,
-    required this.language,
-    required this.version,
-  });
-
-  factory FlavorTextEntry.fromJson(Map<String, dynamic> json) =>
-      _$FlavorTextEntryFromJson(json);
-}
-
-@JsonSerializable()
-class LanguageDetail {
-  final String name;
-  final String url;
-
-  const LanguageDetail({required this.name, required this.url});
-
-  factory LanguageDetail.fromJson(Map<String, dynamic> json) =>
-      _$LanguageDetailFromJson(json);
-}
-
-@JsonSerializable()
-class VersionDetail {
-  final String name;
-  final String url;
-
-  const VersionDetail({required this.name, required this.url});
-
-  factory VersionDetail.fromJson(Map<String, dynamic> json) =>
-      _$VersionDetailFromJson(json);
 }

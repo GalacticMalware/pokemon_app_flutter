@@ -1,9 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pokedex_app/data/models/pokemon_datail/sub_models/ability_slot_model.dart';
+import 'package:pokedex_app/data/models/pokemon_datail/sub_models/move_slot_model.dart';
+import 'package:pokedex_app/data/models/pokemon_datail/sub_models/sprites_model.dart';
+import 'package:pokedex_app/data/models/pokemon_datail/sub_models/stats_slot_model.dart';
+import 'package:pokedex_app/data/models/pokemon_datail/sub_models/type_slot_model.dart';
 import 'package:pokedex_app/domain/entities/pokemon_detail.dart';
 
 part 'pokemon_detail_model.g.dart';
-
-//Modelo de pokemon detail para la informacion del pokemon
 
 @JsonSerializable()
 class PokemonDetailModel {
@@ -35,7 +38,6 @@ class PokemonDetailModel {
   factory PokemonDetailModel.fromJson(Map<String, dynamic> json) =>
       _$PokemonDetailModelFromJson(json);
 
-  // 💡 SEPARACIÓN LOGRADA: Convierte el JSON crudo en la Entidad pura de Dominio
   PokemonDetail toEntity({
     required int baseHappiness,
     required int captureRate,
@@ -52,11 +54,8 @@ class PokemonDetailModel {
           .map((a) => _capitalize(a.ability.name))
           .toList(),
       moves: moves.map((m) => m.move.name).toList(),
-      stats: stats
-          .map((s) => s.toEntity())
-          .toList(), // Mapea cada estadística individualmente
-      height:
-          height ~/ 10, // Conversión matemática de unidades delegada a datos
+      stats: stats.map((s) => s.toEntity()).toList(),
+      height: height ~/ 10,
       weight: weight ~/ 10,
       baseExperience: baseExperience,
       baseHappiness: baseHappiness,
@@ -70,111 +69,4 @@ class PokemonDetailModel {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1);
   }
-}
-
-@JsonSerializable()
-class StatsSlot {
-  @JsonKey(name: 'base_stat')
-  final int baseStat;
-  final StatDetail stat;
-
-  const StatsSlot({required this.baseStat, required this.stat});
-
-  factory StatsSlot.fromJson(Map<String, dynamic> json) =>
-      _$StatsSlotFromJson(json);
-
-  // 💡 Transforma el slot del JSON al formato estricto de la Entidad de Dominio
-  PokemonStat toEntity() {
-    return PokemonStat(
-      name: stat.name,
-      baseStat: baseStat,
-    );
-  }
-}
-
-@JsonSerializable()
-class StatDetail {
-  final String name;
-  const StatDetail({required this.name});
-  factory StatDetail.fromJson(Map<String, dynamic> json) =>
-      _$StatDetailFromJson(json);
-}
-
-@JsonSerializable()
-class MoveSlot {
-  @JsonKey(name: 'move')
-  final MoveDetail move;
-  const MoveSlot({required this.move});
-  factory MoveSlot.fromJson(Map<String, dynamic> json) =>
-      _$MoveSlotFromJson(json);
-}
-
-@JsonSerializable()
-class MoveDetail {
-  final String name;
-  const MoveDetail({required this.name});
-  factory MoveDetail.fromJson(Map<String, dynamic> json) =>
-      _$MoveDetailFromJson(json);
-}
-
-@JsonSerializable()
-class TypeSlot {
-  final int slot;
-  final TypeDetail type;
-  const TypeSlot({required this.slot, required this.type});
-  factory TypeSlot.fromJson(Map<String, dynamic> json) =>
-      _$TypeSlotFromJson(json);
-}
-
-@JsonSerializable()
-class TypeDetail {
-  final String name;
-  const TypeDetail({required this.name});
-  factory TypeDetail.fromJson(Map<String, dynamic> json) =>
-      _$TypeDetailFromJson(json);
-}
-
-@JsonSerializable()
-class AbilitySlot {
-  final AbilityDetail ability;
-  @JsonKey(name: 'is_hidden')
-  final bool isHidden;
-  const AbilitySlot({required this.ability, required this.isHidden});
-  factory AbilitySlot.fromJson(Map<String, dynamic> json) =>
-      _$AbilitySlotFromJson(json);
-}
-
-@JsonSerializable()
-class AbilityDetail {
-  final String name;
-  const AbilityDetail({required this.name});
-  factory AbilityDetail.fromJson(Map<String, dynamic> json) =>
-      _$AbilityDetailFromJson(json);
-}
-
-@JsonSerializable()
-class Sprites {
-  @JsonKey(name: 'other')
-  final OtherSprites? other;
-  const Sprites({required this.other});
-  factory Sprites.fromJson(Map<String, dynamic> json) =>
-      _$SpritesFromJson(json);
-}
-
-@JsonSerializable()
-class OtherSprites {
-  @JsonKey(name: 'official-artwork')
-  final OfficialArtwork? officialArtwork;
-  const OtherSprites({required this.officialArtwork});
-  factory OtherSprites.fromJson(Map<String, dynamic> json) =>
-      _$OtherSpritesFromJson(json);
-}
-
-@JsonSerializable()
-class OfficialArtwork {
-  @JsonKey(name: 'front_default')
-  final String? frontDefault;
-  const OfficialArtwork({required this.frontDefault});
-  factory OfficialArtwork.fromJson(Map<String, dynamic> json) =>
-      _$OfficialArtworkFromJson(json);
 }
