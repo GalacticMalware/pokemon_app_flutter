@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex_app/core/theme/color_const.dart';
 import 'package:pokedex_app/domain/entities/pokemon_detail.dart';
+import 'package:pokedex_app/presentation/blocs/pokemon_detail/pokemon_detail_bloc.dart';
+import 'package:pokedex_app/presentation/blocs/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokedex_app/presentation/global/utils/capitaliza.dart';
 import 'package:pokedex_app/presentation/screens/detail/widgets/feature_item_w.dart';
 import 'package:pokedex_app/presentation/screens/detail/widgets/stats_pokemon_w.dart';
@@ -103,16 +106,33 @@ class DeatailDataPokemon extends StatelessWidget {
           ),
           Positioned(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Icon(Icons.chevron_left, color: Colors.white, size: 25),
-                Image.network(pokemon.imageUrl, height: 200),
-                const Icon(Icons.chevron_right, color: Colors.white, size: 25),
-              ],
-            ),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left,
+                        color: Colors.white, size: 35),
+                    onPressed: pokemon.id > 1
+                        ? () => _navigateToPokemon(context, pokemon.id - 1)
+                        : null,
+                  ),
+                  Image.network(pokemon.imageUrl, height: 200),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right,
+                        color: Colors.white, size: 35),
+                    onPressed: pokemon.id < 151
+                        ? () => _navigateToPokemon(context, pokemon.id + 1)
+                        : null,
+                  ),
+                ]),
           ),
         ],
       ),
     );
+  }
+
+  void _navigateToPokemon(BuildContext context, int newId) {
+    context.read<PokemonDetailBloc>().add(
+          FetchPokemonDetailEvent(pokemonId: newId),
+        );
   }
 }
